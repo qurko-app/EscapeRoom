@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRODOLOM - Križaljka</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Courier+Prime:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1419 0%, #1a2530 50%, #0a0e12 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Courier Prime', monospace;
+        }
+
+        .container {
+            background: linear-gradient(135deg, #f4e4c1 0%, #d9c7a1 100%);
+            border: 3px solid #8b6914;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 
+                0 0 0 6px rgba(139, 105, 20, 0.3),
+                0 20px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            background: 
+                linear-gradient(90deg, #b8860b 50%, transparent 50%),
+                linear-gradient(90deg, #b8860b 50%, transparent 50%),
+                linear-gradient(0deg, #b8860b 50%, transparent 50%),
+                linear-gradient(0deg, #b8860b 50%, transparent 50%);
+            background-size: 12px 3px, 12px 3px, 3px 12px, 3px 12px;
+            background-position: 0 0, 0 100%, 0 0, 100% 0;
+            background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+            pointer-events: none;
+            opacity: 0.4;
+            z-index: -1;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-align: center;
+            color: #1a1410;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(139, 105, 20, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8b6914;
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .crossword-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 30px;
+            background: #3a2817;
+            padding: 2px;
+            border-radius: 4px;
+        }
+
+        .crossword-row {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .row-number {
+            width: 35px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #5fa3d0 0%, #4a8fb8 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            border-radius: 3px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .letter-box {
+            width: 45px;
+            height: 45px;
+            background: #fff8e7;
+            border: 2px solid #8b6914;
+            border-radius: 3px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #1a1410;
+            font-family: 'Courier Prime', monospace;
+            transition: all 0.2s ease;
+            caret-color: #b8860b;
+        }
+
+        .letter-box:focus {
+            outline: none;
+            border-color: #b8860b;
+            background: #fffbf0;
+            box-shadow: 
+                0 0 0 3px rgba(184, 134, 11, 0.3),
+                inset 0 2px 4px rgba(184, 134, 11, 0.1);
+            transform: scale(1.05);
+        }
+
+        .letter-box.correct {
+            background: #d4f1d4;
+            border-color: #4a8;
+            animation: pulse 0.3s ease;
+        }
+
+        .letter-box.incorrect {
+            background: #ffd4d4;
+            border-color: #d44;
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .clues {
+            background: rgba(58, 40, 23, 0.1);
+            border: 2px solid #b8860b;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .clues h3 {
+            font-family: 'Cinzel', serif;
+            color: #3a2817;
+            font-size: 18px;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .clue-item {
+            display: inline-flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .clue-number {
+            font-weight: 700;
+            color: #4a8fb8;
+            min-width: 20px;
+        }
+
+        .clue-text {
+            color: red;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 35px;
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-check {
+            background: linear-gradient(180deg, #d4af37 0%, #b8860b 50%, #8b6914 100%);
+            color: #1a1410;
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-check:hover {
+            background: linear-gradient(180deg, #e5c158 0%, #d4af37 50%, #b8860b 100%);
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+                0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-reset {
+            background: linear-gradient(180deg, #3a2817 0%, #2a1810 100%);
+            color: #f4e4c1;
+            box-shadow: 
+                inset 0 1px 0 rgba(139, 105, 20, 0.4),
+                0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-reset:hover {
+            background: linear-gradient(180deg, #4a3020 0%, #3a2817 100%);
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 0 1px 0 rgba(139, 105, 20, 0.6),
+                0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success-modal.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-content {
+            background: linear-gradient(135deg, #f4e4c1 0%, #d9c7a1 100%);
+            border: 4px solid #b8860b;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .success-content h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 36px;
+            color: #1a1410;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+        }
+
+        .success-content p {
+            color: #3a2817;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .success-icon {
+            font-size: 72px;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .qurko-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 16px 40px;
+            background: linear-gradient(180deg, #d4af37 0%, #b8860b 100%);
+            color: #1a1410;
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 2px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .qurko-link:hover {
+            background: linear-gradient(180deg, #e5c158 0%, #d4af37 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #8b6914;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+
+            .letter-box, .row-number {
+                width: 38px;
+                height: 38px;
+                font-size: 20px;
+            }
+
+            .row-number {
+                width: 30px;
+                font-size: 16px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .letter-box, .row-number {
+                width: 32px;
+                height: 32px;
+                font-size: 18px;
+            }
+
+            .row-number {
+                width: 26px;
+                font-size: 14px;
+            }
+
+            .crossword-grid {
+                gap: 1px;
+            }
+
+            .crossword-row {
+                gap: 1px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>KRIŽALJKA</h1>
+        <p class="subtitle">~ Riješi zagonetku i pronađi put do spasa ~</p>
+
+        <div class="clues">
+            <h3>STOL 7 JE U PANICI</h3>
+            <h3>NARUDŽBA JE IZGUBLJENA</h3>
+            <h3>GOSTI ČEKAJU</h3>
+            <h3>PITANJA SE KRIJU NEGDJE U REDU 6 ODOZGORA</h3>
+            <div class="clue-item">
+                <span class="clue-number"></span>
+                <span class="clue-text">Piće od 9 slova</span>
+            </div>
+            <div class="clue-item">
+                <span class="clue-number"></span>
+                <span class="clue-text">Uzmi slova</span>
+            </div>
+            <div class="clue-item">
+                <span class="clue-number"></span>
+                <span class="clue-text">Dobit ćeš ime pića</span>
+            </div>
+            <div class="clue-item">
+                <span class="clue-number"></span>
+                <span class="clue-text">Zbroji sve brojeve</span>
+            </div>
+            <div class="clue-item">
+                <span class="clue-number"></span>
+                <span class="clue-text">To je tvoj broj</span>
+            </div>
+            <div class="clue-item">
+                <span class="clue-number"></span>
+                <span class="clue-text">HINT - BANANA - B-1 A-3 ITD, ZBROJI SVE ZAJEDNO I DOBIJ KOD </span>
+            </div>
+            
+        </div>
+
+        <div class="crossword-grid" id="crosswordGrid"></div>
+
+        <div class="buttons">
+            <button class="btn btn-check" onclick="checkAnswers()">PROVJERI ODGOVORE</button>
+            <button class="btn btn-reset" onclick="resetCrossword()">POČNI ISPOČETKA</button>
+        </div>
+
+        <p class="footer">Powered by <strong>Qurko</strong> — Dinamični QR doživljaj</p>
+    </div>
+
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">🎉</div>
+            <h2>BRAVO!</h2>
+            <p>Uspješno ste riješili križaljku!<br></p>
+        </div>
+    </div>
+
+    <script>
+        const answers = [
+            'CRES',
+            'USTIMA',
+            'BARKA',
+            'AUTOM',
+            'LIMUN',
+            'ILOVIK',
+            'BROJEVA',
+            'RIJEKA',
+            'ELEMENT'
+        ];
+
+        // Generate crossword grid
+        function generateGrid() {
+            const grid = document.getElementById('crosswordGrid');
+            
+            answers.forEach((answer, rowIndex) => {
+                const row = document.createElement('div');
+                row.className = 'crossword-row';
+                
+                // Row number
+                const numberDiv = document.createElement('div');
+                numberDiv.className = 'row-number';
+                numberDiv.textContent = rowIndex + 1;
+                row.appendChild(numberDiv);
+                
+                // Letter boxes
+                for (let i = 0; i < answer.length; i++) {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.maxLength = 1;
+                    input.className = 'letter-box';
+                    input.dataset.row = rowIndex;
+                    input.dataset.col = i;
+                    input.dataset.correct = answer[i];
+                    
+                    // Auto-focus next input
+                    input.addEventListener('input', function(e) {
+                        const val = this.value.toUpperCase();
+                        this.value = val;
+                        
+                        if (val && this.nextElementSibling && this.nextElementSibling.classList.contains('letter-box')) {
+                            this.nextElementSibling.focus();
+                        }
+                    });
+                    
+                    // Backspace navigation
+                    input.addEventListener('keydown', function(e) {
+                        if (e.key === 'Backspace' && !this.value && this.previousElementSibling && this.previousElementSibling.classList.contains('letter-box')) {
+                            this.previousElementSibling.focus();
+                        }
+                        // Enter key moves to next row
+                        if (e.key === 'Enter') {
+                            const currentRow = parseInt(this.dataset.row);
+                            const nextRowFirstInput = document.querySelector(`[data-row="${currentRow + 1}"][data-col="0"]`);
+                            if (nextRowFirstInput) {
+                                nextRowFirstInput.focus();
+                            } else {
+                                checkAnswers(); // Auto-check when hitting enter on last row
+                            }
+                        }
+                    });
+                    
+                    row.appendChild(input);
+                }
+                
+                grid.appendChild(row);
+            });
+
+            // Focus first input
+            const firstInput = document.querySelector('.letter-box');
+            if (firstInput) firstInput.focus();
+        }
+
+        function checkAnswers() {
+            let allCorrect = true;
+            const inputs = document.querySelectorAll('.letter-box');
+            
+            inputs.forEach(input => {
+                const userAnswer = input.value.toUpperCase();
+                const correctAnswer = input.dataset.correct;
+                
+                input.classList.remove('correct', 'incorrect');
+                
+                if (userAnswer === correctAnswer) {
+                    input.classList.add('correct');
+                } else {
+                    input.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+            
+            if (allCorrect) {
+                setTimeout(() => {
+                    document.getElementById('successModal').classList.add('show');
+                }, 500);
+            }
+        }
+
+        function resetCrossword() {
+            const inputs = document.querySelectorAll('.letter-box');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+            });
+            document.getElementById('successModal').classList.remove('show');
+            
+            // Focus first input
+            const firstInput = document.querySelector('.letter-box');
+            if (firstInput) firstInput.focus();
+        }
+
+        // Close modal on click outside
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+            }
+        });
+
+        // Initialize
+        generateGrid();
+
+        // ⚠️ IMPORTANT: Zamijeni link ispod sa pravim Qurko booking URL-om!
+        document.getElementById('qurkoLink').href = 'https://app.qurko.eu/p/YOUR_BOOKING_LINK';
+    </script>
+</body>
+</html>
