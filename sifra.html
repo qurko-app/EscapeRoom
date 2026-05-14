@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koja je prava šifra?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1a1008;
+      font-family: 'Poppins', serif;
+    }
+
+    .paper {
+      position: relative;
+      width: 480px;
+      min-height: 620px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 50px;
+
+      /* Layered paper texture */
+      background:
+        /* top burn/fold shadows */
+        radial-gradient(ellipse at 10% 5%, rgba(80,40,10,0.45) 0%, transparent 40%),
+        radial-gradient(ellipse at 90% 3%, rgba(60,30,5,0.35) 0%, transparent 35%),
+        /* bottom stain */
+        radial-gradient(ellipse at 50% 95%, rgba(100,55,10,0.3) 0%, transparent 50%),
+        /* mid stains */
+        radial-gradient(ellipse at 30% 60%, rgba(120,70,20,0.15) 0%, transparent 30%),
+        radial-gradient(ellipse at 70% 40%, rgba(90,50,10,0.12) 0%, transparent 25%),
+        radial-gradient(ellipse at 55% 75%, rgba(110,60,15,0.1) 0%, transparent 20%),
+        /* base paper color */
+        linear-gradient(170deg, #e8d8a8 0%, #d4be88 30%, #c9b07a 60%, #d6c28e 85%, #c4ae7c 100%);
+
+      /* Torn/aged edge effect using box-shadow and border */
+      border: none;
+      box-shadow:
+        /* outer glow/darkness */
+        0 0 0 3px #b8975a,
+        0 0 0 6px #8a6a30,
+        4px 4px 20px rgba(0,0,0,0.6),
+        8px 8px 40px rgba(0,0,0,0.4),
+        -2px -2px 15px rgba(0,0,0,0.3),
+        /* inner highlight */
+        inset 0 0 30px rgba(180,130,60,0.2),
+        inset 0 0 60px rgba(100,60,10,0.15);
+
+      /* Rough paper edge using clip-path */
+      clip-path: polygon(
+        0% 1.5%, 1% 0.5%, 2% 1.2%, 3.5% 0.2%, 5% 1%, 6% 0.3%, 8% 0.8%, 10% 0%,
+        12% 0.6%, 14% 0.1%, 16% 0.7%, 18% 0.2%, 20% 0.9%, 22% 0.3%, 25% 0.8%,
+        28% 0.1%, 30% 0.6%, 33% 0%, 36% 0.7%, 40% 0.2%, 44% 0.8%, 48% 0.1%,
+        52% 0.6%, 56% 0%, 60% 0.5%, 64% 0.2%, 68% 0.8%, 72% 0.1%, 76% 0.6%,
+        80% 0%, 84% 0.7%, 88% 0.2%, 92% 0.8%, 96% 0.1%, 98% 0.5%, 100% 1%,
+        99.5% 5%, 100% 10%, 99.2% 15%, 100% 20%, 99.5% 25%, 100% 30%,
+        99.3% 35%, 100% 40%, 99.6% 45%, 100% 50%, 99.4% 55%, 100% 60%,
+        99.5% 65%, 100% 70%, 99.2% 75%, 100% 80%, 99.6% 85%, 100% 90%,
+        99.3% 95%, 100% 99%,
+        98% 100%, 96% 99.3%, 94% 100%, 92% 99.5%, 90% 100%, 87% 99.2%,
+        84% 100%, 80% 99.6%, 76% 100%, 72% 99.3%, 68% 100%, 64% 99.5%,
+        60% 100%, 56% 99.2%, 52% 100%, 48% 99.6%, 44% 100%, 40% 99.3%,
+        36% 100%, 32% 99.5%, 28% 100%, 24% 99.2%, 20% 100%, 16% 99.6%,
+        12% 100%, 8% 99.3%, 4% 100%, 2% 99.5%, 0% 100%,
+        0.5% 95%, 0% 90%, 0.7% 85%, 0% 80%, 0.4% 75%, 0% 70%,
+        0.6% 65%, 0% 60%, 0.3% 55%, 0% 50%, 0.7% 45%, 0% 40%,
+        0.5% 35%, 0% 30%, 0.4% 25%, 0% 20%, 0.6% 15%, 0% 10%, 0.5% 5%
+      );
+    }
+
+    /* Noise/grain overlay */
+    .paper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+
+  
+
+    .title {
+      font-family: 'Poppins', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: #3d2200;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+      text-shadow: 1px 1px 2px rgba(200,160,80,0.5);
+    }
+
+    .divider {
+      width: 70%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #8a6020, #5a3a08, #8a6020, transparent);
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .divider::before, .divider::after {
+      content: '✦';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8a6020;
+      font-size: 0.55rem;
+    }
+    .divider::before { left: -10px; }
+    .divider::after { right: -10px; }
+
+    .subtitle {
+      font-family: 'Poppins', serif;
+      font-size: 0.72rem;
+      color: #3d2200;
+      letter-spacing: 0.15em;
+      margin-bottom: 42px;
+      position: relative;
+      z-index: 1;
+      opacity: 0.8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px 36px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .numeral {
+      font-family: 'Poppins', serif;
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: #2c1500;
+      text-align: center;
+      cursor: pointer;
+      padding: 18px 22px;
+      position: relative;
+      letter-spacing: 0.08em;
+      text-shadow:
+        1px 1px 0 rgba(200,160,80,0.4),
+        2px 2px 4px rgba(0,0,0,0.2);
+      transition: transform 0.15s ease, color 0.15s ease;
+      user-select: none;
+
+      /* Faded ink box border */
+      border: 1.5px solid rgba(100,60,10,0.35);
+      background: rgba(200,160,80,0.08);
+    }
+
+    .numeral::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border: 1px solid rgba(100,60,10,0.15);
+      pointer-events: none;
+    }
+
+    /* Corner ornaments */
+    .numeral::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(100,60,10,0.2) 0%, transparent 20%),
+        radial-gradient(circle at 100% 0%, rgba(100,60,10,0.2) 0%, transparent 20%),
+        radial-gradient(circle at 0% 100%, rgba(100,60,10,0.2) 0%, transparent 20%),
+        radial-gradient(circle at 100% 100%, rgba(100,60,10,0.2) 0%, transparent 20%);
+      pointer-events: none;
+    }
+
+    .numeral:hover {
+      color: #5c1a00;
+      transform: scale(1.04);
+    }
+
+    .numeral:active {
+      transform: scale(0.97);
+    }
+
+    .numeral.shuffle-anim {
+      animation: shuffleFlash 0.4s ease;
+    }
+
+    @keyframes shuffleFlash {
+      0%   { opacity: 1; transform: scale(1); }
+      25%  { opacity: 0.3; transform: scale(0.92) rotate(-2deg); }
+      75%  { opacity: 0.3; transform: scale(0.92) rotate(2deg); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .hint {
+      margin-top: 38px;
+      font-family: 'Poppins', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: #3d2200;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+      text-shadow: 1px 1px 2px rgba(200,160,80,0.5);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="paper">
+        <div class="title">Koja je prava šifra?</div>
+    <div class="divider"></div>
+    <div class="subtitle">Odaberi mudro</div>
+
+    <div class="grid" id="grid">
+      <!-- Filled by JS -->
+    </div>
+
+     <div class="hint">
+        <div class="title">What is the real code?</div>
+    <div class="divider"></div>
+    <div class="subtitle">Choose wisely.</div>
+
+    <div class="grid" id="grid">
+      <!-- Filled by JS -->
+    </div>
+
+  </div>
+
+  <script>
+    const numerals = ['CLXXIII', 'CLXXIV', 'CVIII', 'CIX'];
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function renderGrid(order) {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      order.forEach((num, idx) => {
+        const div = document.createElement('div');
+        div.className = 'numeral';
+        div.textContent = num;
+        div.addEventListener('click', () => {
+          // Animate all, then reshuffle
+          document.querySelectorAll('.numeral').forEach(el => {
+            el.classList.remove('shuffle-anim');
+            void el.offsetWidth; // reflow
+            el.classList.add('shuffle-anim');
+          });
+          setTimeout(() => {
+            renderGrid(shuffle(numerals));
+          }, 350);
+        });
+        grid.appendChild(div);
+      });
+    }
+
+    // Initial random order on every page load
+    renderGrid(shuffle(numerals));
+  </script>
+</body>
+</html>
