@@ -31,35 +31,25 @@
       justify-content: center;
       padding: 60px 50px;
 
-      /* Layered paper texture */
       background:
-        /* top burn/fold shadows */
         radial-gradient(ellipse at 10% 5%, rgba(80,40,10,0.45) 0%, transparent 40%),
         radial-gradient(ellipse at 90% 3%, rgba(60,30,5,0.35) 0%, transparent 35%),
-        /* bottom stain */
         radial-gradient(ellipse at 50% 95%, rgba(100,55,10,0.3) 0%, transparent 50%),
-        /* mid stains */
         radial-gradient(ellipse at 30% 60%, rgba(120,70,20,0.15) 0%, transparent 30%),
         radial-gradient(ellipse at 70% 40%, rgba(90,50,10,0.12) 0%, transparent 25%),
         radial-gradient(ellipse at 55% 75%, rgba(110,60,15,0.1) 0%, transparent 20%),
-        /* base paper color */
         linear-gradient(170deg, #e8d8a8 0%, #d4be88 30%, #c9b07a 60%, #d6c28e 85%, #c4ae7c 100%);
 
-      /* Torn/aged edge effect using box-shadow and border */
-      border: none;
       box-shadow:
-        /* outer glow/darkness */
         0 0 0 3px #b8975a,
         0 0 0 6px #8a6a30,
         4px 4px 20px rgba(0,0,0,0.6),
         8px 8px 40px rgba(0,0,0,0.4),
         -2px -2px 15px rgba(0,0,0,0.3),
-        /* inner highlight */
         inset 0 0 30px rgba(180,130,60,0.2),
         inset 0 0 60px rgba(100,60,10,0.15);
 
-      /* Rough paper edge using clip-path */
-      clip-path: polygon(
+      clip-path: polygon( /* ... isti clip-path ... */ 
         0% 1.5%, 1% 0.5%, 2% 1.2%, 3.5% 0.2%, 5% 1%, 6% 0.3%, 8% 0.8%, 10% 0%,
         12% 0.6%, 14% 0.1%, 16% 0.7%, 18% 0.2%, 20% 0.9%, 22% 0.3%, 25% 0.8%,
         28% 0.1%, 30% 0.6%, 33% 0%, 36% 0.7%, 40% 0.2%, 44% 0.8%, 48% 0.1%,
@@ -80,7 +70,6 @@
       );
     }
 
-    /* Noise/grain overlay */
     .paper::before {
       content: '';
       position: absolute;
@@ -90,8 +79,6 @@
       pointer-events: none;
       mix-blend-mode: multiply;
     }
-
-  
 
     .title {
       font-family: 'Poppins', serif;
@@ -132,10 +119,9 @@
       font-size: 0.72rem;
       color: #3d2200;
       letter-spacing: 0.15em;
-      margin-bottom: 42px;
+      margin-bottom: 16px;           /* podešeno */
       position: relative;
       z-index: 1;
-      opacity: 0.8;
     }
 
     .grid {
@@ -144,6 +130,21 @@
       gap: 28px 36px;
       position: relative;
       z-index: 1;
+      margin-bottom: 22px;           /* ključno za simetriju */
+    }
+
+    .click-message {
+      font-family: 'Poppins', serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #5c1a00;
+      text-align: center;
+      letter-spacing: 0.08em;
+      opacity: 1;
+      font-style: italic;
+      min-height: 24px;
+      margin-top: 8px;
+      margin-bottom: 8px;
     }
 
     .numeral {
@@ -156,13 +157,9 @@
       padding: 18px 22px;
       position: relative;
       letter-spacing: 0.08em;
-      text-shadow:
-        1px 1px 0 rgba(200,160,80,0.4),
-        2px 2px 4px rgba(0,0,0,0.2);
+      text-shadow: 1px 1px 0 rgba(200,160,80,0.4), 2px 2px 4px rgba(0,0,0,0.2);
       transition: transform 0.15s ease, color 0.15s ease;
       user-select: none;
-
-      /* Faded ink box border */
       border: 1.5px solid rgba(100,60,10,0.35);
       background: rgba(200,160,80,0.08);
     }
@@ -175,27 +172,19 @@
       pointer-events: none;
     }
 
-    /* Corner ornaments */
     .numeral::after {
       content: '';
       position: absolute;
       inset: -1px;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(100,60,10,0.2) 0%, transparent 20%),
-        radial-gradient(circle at 100% 0%, rgba(100,60,10,0.2) 0%, transparent 20%),
-        radial-gradient(circle at 0% 100%, rgba(100,60,10,0.2) 0%, transparent 20%),
-        radial-gradient(circle at 100% 100%, rgba(100,60,10,0.2) 0%, transparent 20%);
+      background: radial-gradient(circle at 0% 0%, rgba(100,60,10,0.2) 0%, transparent 20%),
+                  radial-gradient(circle at 100% 0%, rgba(100,60,10,0.2) 0%, transparent 20%),
+                  radial-gradient(circle at 0% 100%, rgba(100,60,10,0.2) 0%, transparent 20%),
+                  radial-gradient(circle at 100% 100%, rgba(100,60,10,0.2) 0%, transparent 20%);
       pointer-events: none;
     }
 
-    .numeral:hover {
-      color: #5c1a00;
-      transform: scale(1.04);
-    }
-
-    .numeral:active {
-      transform: scale(0.97);
-    }
+    .numeral:hover { color: #5c1a00; transform: scale(1.04); }
+    .numeral:active { transform: scale(0.97); }
 
     .numeral.shuffle-anim {
       animation: shuffleFlash 0.4s ease;
@@ -208,42 +197,25 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
-    .hint {
-      margin-top: 38px;
-      font-family: 'Poppins', serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: 0.25em;
-      color: #3d2200;
-      text-align: center;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-      position: relative;
-      z-index: 1;
-      text-shadow: 1px 1px 2px rgba(200,160,80,0.5);
-    }
-
   </style>
 </head>
 <body>
   <div class="paper">
-        <div class="title">Koja je prava šifra?</div>
+    <div class="title">Koja je prava šifra?</div>
     <div class="divider"></div>
     <div class="subtitle">Odaberi mudro</div>
 
-    <div class="grid" id="grid">
-      <!-- Filled by JS -->
+    <div class="click-message">Samo je jedno rješenje. Svaki broj može biti točan!</div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="click-message">Only one solution. Every number can be correct!</div>
+
+    <div style="margin-top: 32px; display: flex; flex-direction: column; align-items: center;">
+      <div class="title">What is the real code?</div>
+      <div class="divider"></div>
+      <div class="subtitle">Choose wisely.</div>
     </div>
-
-     <div class="hint">
-        <div class="title">What is the real code?</div>
-    <div class="divider"></div>
-    <div class="subtitle">Choose wisely.</div>
-
-    <div class="grid" id="grid">
-      <!-- Filled by JS -->
-    </div>
-
   </div>
 
   <script>
@@ -261,26 +233,22 @@
     function renderGrid(order) {
       const grid = document.getElementById('grid');
       grid.innerHTML = '';
-      order.forEach((num, idx) => {
+      order.forEach((num) => {
         const div = document.createElement('div');
         div.className = 'numeral';
         div.textContent = num;
         div.addEventListener('click', () => {
-          // Animate all, then reshuffle
           document.querySelectorAll('.numeral').forEach(el => {
             el.classList.remove('shuffle-anim');
-            void el.offsetWidth; // reflow
+            void el.offsetWidth;
             el.classList.add('shuffle-anim');
           });
-          setTimeout(() => {
-            renderGrid(shuffle(numerals));
-          }, 350);
+          setTimeout(() => renderGrid(shuffle(numerals)), 350);
         });
         grid.appendChild(div);
       });
     }
 
-    // Initial random order on every page load
     renderGrid(shuffle(numerals));
   </script>
 </body>
